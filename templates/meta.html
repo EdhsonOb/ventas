@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/meta.css') }}">
+    <meta charset="UTF-8">
+    <title>Meta</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .edit-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+    <script>
+        function formatNumber(num) {
+            return num.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function toggleEdit() {
+            var ids = ['meta_anio', 'meta_mes'];
+            var button = document.getElementById('button');
+
+            for (var i = 0; i < ids.length; i++) {
+                var id = ids[i];
+                var label = document.getElementById('label_' + id);
+                var input = document.getElementById('input_' + id);
+
+                if (label.style.display !== 'none') {
+                    label.style.display = 'none';
+                    input.style.display = 'block';
+                    button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#FFFFFF" d="m18.988 2.012l3 3L19.701 7.3l-3-3zM8 16h3l7.287-7.287l-3-3L8 13z"/><path fill="#FFFFFF" d="M19 19H8.158c-.026 0-.053.01-.079.01c-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .896-2 2v14c0 1.104.897 2 2 2h14a2 2 0 0 0 2-2v-8.668l-2 2V19z"/></svg>';
+                } else {
+                    label.style.display = 'block';
+                    input.style.display = 'none';
+                    button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#FFFFFF" d="m18.988 2.012l3 3L19.701 7.3l-3-3zM8 16h3l7.287-7.287l-3-3L8 13z"/><path fill="#FFFFFF" d="M19 19H8.158c-.026 0-.053.01-.079.01c-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .896-2 2v14c0 1.104.897 2 2 2h14a2 2 0 0 0 2-2v-8.668l-2 2V19z"/></svg>';
+                    label.textContent = formatNumber(parseFloat(input.value));
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Meta</a>
+    </nav>
+    <div class="container mt-5">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Presupuesto fijo del año</h5>
+                            <p class="card-text" id="label_meta_anio">{{ valor_anio }}</p>
+                            <input type="number" id="input_meta_anio" name="meta_anio" value="{{ valor_anio }}" style="display: none;" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Presupuesto fijo del mes</h5>
+                            <p class="card-text" id="label_meta_mes">{{ valor_mes }}</p>
+                            <input type="number" id="input_meta_mes" name="meta_mes" value="{{ valor_mes }}" style="display: none;" class="form-control">
+                            <button type="submit" id="button" class="btn btn-primary edit-button" onclick="toggleEdit();">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#FFFFFF" d="m18.988 2.012l3 3L19.701 7.3l-3-3zM8 16h3l7.287-7.287l-3-3L8 13z"/><path fill="#FFFFFF" d="M19 19H8.158c-.026 0-.053.01-.079.01c-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .896-2 2v14c0 1.104.897 2 2 2h14a2 2 0 0 0 2-2v-8.668l-2 2V19z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Sell in del año</h5>
+                        <p class="card-text" id="subtotal_anio">{{ subtotal_anio }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Sell in del mes</h5>
+                        <p class="card-text" id="subtotal_mes_actual">{{ subtotal_mes_actual }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">avance vs presupuesto del año</h5>
+                        <p class="card-text" id="porcentaje_anio">{{ (subtotal_anio / valor_anio * 100) if valor_anio else 0 }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">avance vs presupuesto del mes</h5>
+                        <p class="card-text" id="porcentaje_mes">{{ (subtotal_mes_actual / valor_mes * 100) if valor_mes else 0 }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('subtotal_anio').textContent = formatNumber({{ subtotal_anio }});
+        document.getElementById('subtotal_mes_actual').textContent = formatNumber({{ subtotal_mes_actual }});
+        document.getElementById('porcentaje_anio').textContent = formatNumber({{ (subtotal_anio / valor_anio * 100) if valor_anio else 0 }}) + ' %';
+        document.getElementById('porcentaje_mes').textContent = formatNumber({{ (subtotal_mes_actual / valor_mes * 100) if valor_mes else 0 }}) + ' %';
+        document.getElementById('label_meta_anio').textContent = formatNumber({{ valor_anio }});
+        document.getElementById('label_meta_mes').textContent = formatNumber({{ valor_mes }});
+    </script>
+</body>
+</html>
